@@ -19,6 +19,30 @@ function parseArticleDate(dateText) {
   return formatDate(parsedDate);
 }
 
+// Keywords used to identify news articles
+const newsKeywords = [
+  "announce",
+  "announces",
+  "announced",
+  "partnership",
+  "launch",
+  "launches",
+  "launched",
+  "introduce",
+  "introduced",
+  "unveil",
+  "unveils",
+  "acquisition",
+  "investment",
+  "earnings",
+  "outage",
+  "collaboration",
+  "expands",
+  "expansion",
+  "agreement",
+  "innovation"
+];
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return {
@@ -49,8 +73,7 @@ exports.handler = async (event) => {
 
     const company = topic.trim();
 
-    // Calculate the 30-day research period.
-
+    // Calculate the 30-day research period
     const meeting = new Date(`${meetingDate}T00:00:00`);
 
     if (Number.isNaN(meeting.getTime())) {
@@ -71,8 +94,7 @@ exports.handler = async (event) => {
     const startDateText = formatDate(startDate);
     const endDateText = formatDate(endDate);
 
-    // Search Tavily.
-
+    // Search Tavily
     const query =
       `${company} recent news announcements partnerships ` +
       `AI cloud product launches business updates`;
@@ -110,17 +132,12 @@ exports.handler = async (event) => {
 
     const results = data.results || [];
 
-    // Filter relevant research results.
-
+    // Filter relevant research results
     const excludedDomains = [
       "superpowerdaily.com"
     ];
 
-    
-
-
     const filteredResults = results
-
       .map((result) => {
         const title = result.title || "";
         const url = result.url || "";
@@ -162,12 +179,9 @@ exports.handler = async (event) => {
           return null;
         }
 
-        // Check Tavily publication date first.
-        // If unavailable, check explicitly labelled
-        // publication dates in the article content.
-
+        // Check publication date
         const contentDateMatch = content.match(
-          /(?:Press Release|Published|Publication date|Date published)\s*[,:\-]\s*((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+20\d{2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?\s+\d{1,2},?\s+20\d{2})/i
+          /(?:Press Release|Published|Publication date|Date published)\s*[:,\-]?\s*((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+20\d{2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?\s+\d{1,2},?\s+20\d{2})/i
         );
 
         const publishedDate =
@@ -203,13 +217,10 @@ exports.handler = async (event) => {
           dateVerified: dateVerified
         };
       })
-
       .filter(Boolean)
-
       .slice(0, 8);
 
-    // Prepare recent developments.
-
+    // Prepare recent developments
     const developments = filteredResults.map(
       (result, index) => {
         return (
@@ -221,8 +232,7 @@ exports.handler = async (event) => {
       }
     );
 
-    // Calculate publication-date statistics.
-
+    // Calculate publication-date statistics
     const verifiedCount = filteredResults.filter(
       result => result.dateVerified
     ).length;
@@ -230,14 +240,12 @@ exports.handler = async (event) => {
     const unverifiedCount =
       filteredResults.length - verifiedCount;
 
-    // Prepare executive summary.
-
+    // Prepare executive summary
     const summary = filteredResults.length > 0
       ? `The research identified ${filteredResults.length} relevant developments concerning ${company} during ${startDateText} to ${endDateText}. Key areas include partnerships, AI and cloud updates, product announcements, and service developments. ${verifiedCount} publication dates were verified from source metadata or explicitly labelled article dates.`
       : `No relevant results with verified publication dates were found for ${company} during ${startDateText} to ${endDateText}.`;
 
-    // Prepare final briefing.
-
+    // Prepare final briefing
     const briefing = `
 MEETING RESEARCH BRIEFING
 
