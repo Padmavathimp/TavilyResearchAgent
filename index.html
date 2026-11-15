@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tavily Research Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🔍 Tavily Research Agent</h1>
+        <p>Your AI-powered research assistant</p>
+    </header>
+
+    <main class="container">
+        <section class="search-box">
+            <h2>Prepare Your Meeting Briefing</h2>
+            <p>Research recent information about a company or person.</p>
+
+            <label for="topic">Company or Person Name</label>
+            <input type="text" id="topic"
+                placeholder="Example: Google">
+
+            <label for="meetingDate">Meeting Date</label>
+            <input type="date" id="meetingDate">
+
+            <button id="researchBtn" onclick="startResearch()">
+                Research Now
+            </button>
+        </section>
+
+        <section class="results">
+            <h2>Research Briefing</h2>
+            <div id="output">
+                Your research results will appear here.
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built with ❤️ by an Independent Innovator</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
